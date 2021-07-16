@@ -91,7 +91,7 @@ class Faucet {
     const zilliqa = new Zilliqa(ISOLATED_URL);
     zilliqa.wallet.addByPrivateKey(OWNER_PRIVATEKEY);
 
-    const contract = zilliqa.contracts.at(this.tokenAddres);
+    const contract = zilliqa.contracts.at(this.tokenAddress);
 
     const callTx = await contract.callWithoutConfirm(
       "Transfer",
