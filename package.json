@@ -1,7 +1,7 @@
 {
-  "name": "isolated-server-faucet",
+  "name": "carb-faucet-server",
   "version": "1.0.0",
-  "description": "Zilliqa Faucet for Isolated Server",
+  "description": "CARBON Faucet for Test Server",
   "main": "server.js",
   "dependencies": {
     "@zilliqa-js/crypto": "^0.8.9",
@@ -19,9 +19,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint",
-    "start": "node scr/server.js",
-    "build": "eslint && babel ./src --out-dir dist"
+    "start": "node server.js"
   },
   "author": "Ovidiu Miclea (micovi)",
   "license": "MIT",
