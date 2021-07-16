@@ -88,14 +88,7 @@ class Faucet {
     const gasPrice = await this.zilliqa.blockchain.getMinimumGasPrice();
     const myGasPrice = gasPrice.result;
 
-    const zilliqa = new Zilliqa(ISOLATED_URL);
-    zilliqa.wallet.addByPrivateKey(OWNER_PRIVATEKEY);
-
-    console.log(this.tokenAddress);
-
-    const contract = zilliqa.contracts.at(this.tokenAddress);
-
-    console.log(contract);
+    const contract = this.zilliqa.contracts.at(this.tokenAddress);
 
     const callTx = await contract.callWithoutConfirm(
       "Transfer",
@@ -103,12 +96,12 @@ class Faucet {
         {
           vname: 'to',
           type: 'ByStr20',
-          value: userAddress,
+          value: userAddress.toString(),
         },
         {
           vname: 'amount',
           type: 'Uint128',
-          value: amount,
+          value: amount.toString(),
         },
       ],
       {

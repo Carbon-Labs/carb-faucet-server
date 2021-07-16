@@ -4,9 +4,9 @@
   "description": "CARBON Faucet for Test Server",
   "main": "server.js",
   "dependencies": {
-    "@zilliqa-js/crypto": "^0.8.9",
-    "@zilliqa-js/util": "^0.8.8",
-    "@zilliqa-js/zilliqa": "^0.8.9",
+    "@zilliqa-js/crypto": "^3.0.0",
+    "@zilliqa-js/util": "^3.0.0",
+    "@zilliqa-js/zilliqa": "^3.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
