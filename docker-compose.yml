@@ -41,14 +41,14 @@ services:
     restart: always
     environment:
       REDIS_URL: redis://redis/0
-      VIRTUAL_HOST: faucent.carbontoken.info
-      LETSENCRYPT_HOST: faucent.carbontoken.info
+      VIRTUAL_HOST: faucet.carbontoken.info
+      LETSENCRYPT_HOST: faucet.carbontoken.info
       LETSENCRYPT_EMAIL: contact@carbontoken.info
     env_file: .env
     ports:
       - 3000:3000
     depends_on: [ redis ]
-    command: node dist/server.js
+    command: node server.js
     volumes:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
@@ -63,7 +63,7 @@ services:
       REDIS_URL: redis://redis/0
     env_file: .env
     depends_on: [ redis ]
-    command: node src/worker
+    command: node worker.js
     volumes:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
