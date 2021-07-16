@@ -94,9 +94,9 @@ class Faucet {
       "Transfer",
       [
         {
-          vname: 'msg',
+          vname: 'to',
           type: 'ByStr20',
-          value: this.tokenAddress,
+          value: userAddress,
         },
         {
           vname: 'amount',
