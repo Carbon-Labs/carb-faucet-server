@@ -14,9 +14,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/garb/request-funds/:token_address/:address/:amount', async (req, res) => {
-  if (!isLocked) {
-    res.status(400).json("Faucet Locked");
-  }
   const address = req.params.address;
   const amount = 10 ** 8 * parseInt(req.params.amount);
   const tokenAddress = req.params.token_address;
@@ -40,9 +37,6 @@ app.get('/garb/request-funds/:token_address/:address/:amount', async (req, res) 
 });
 
 app.get('/xsgd/request-funds/:token_address/:address/:amount', async (req, res) => {
-  if (!isLocked) {
-    res.status(400).json("Faucet Locked");
-  }
   const address = req.params.address;
   const amount = 10 ** 6 * parseInt(req.params.amount);
   const tokenAddress = req.params.token_address;
@@ -67,9 +61,6 @@ app.get('/xsgd/request-funds/:token_address/:address/:amount', async (req, res) 
 
 
 app.post('/zwap/request-funds/:token_address/:address/:amount', async (req, res) => {
-  if (!isLocked) {
-    res.status(400).json("Faucet Locked");
-  }
   const address = req.params.address;
   const amount = 10 ** 12 * parseInt(req.params.amount);
   const tokenAddress = req.params.token_address;
@@ -95,9 +86,6 @@ app.post('/zwap/request-funds/:token_address/:address/:amount', async (req, res)
 
 
 app.post('/gzil/request-fund/:token_address/:address/:amount', async (req, res) => {
-  if (!isLocked) {
-    res.status(400).json("Faucet Locked");
-  }
   const address = req.params.address;
   const amount = 10 ** 15 * parseInt(req.params.amount);
   const tokenAddress = req.params.token_address;
