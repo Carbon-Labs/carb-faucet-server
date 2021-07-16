@@ -1,0 +1,33 @@
+{
+  "name": "isolated-server-faucet",
+  "version": "1.0.0",
+  "description": "Zilliqa Faucet for Isolated Server",
+  "main": "server.js",
+  "dependencies": {
+    "@zilliqa-js/crypto": "^0.8.9",
+    "@zilliqa-js/util": "^0.8.8",
+    "@zilliqa-js/zilliqa": "^0.8.9",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "fs-extra": "^8.1.0",
+    "tslib": "^1.11.1",
+    "bull": "3.26.0",
+    "uuid": "8.3.2",
+    "ioredis": "4.27.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint",
+    "start": "node scr/server.js",
+    "build": "eslint && babel ./src --out-dir dist"
+  },
+  "author": "Ovidiu Miclea (micovi)",
+  "license": "MIT",
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  }
+}
