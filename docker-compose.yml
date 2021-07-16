@@ -41,8 +41,8 @@ services:
     restart: always
     environment:
       REDIS_URL: redis://redis/0
-      VIRTUAL_HOST: faucet.carbontoken.info
-      LETSENCRYPT_HOST: faucet.carbontoken.info
+      VIRTUAL_HOST: api-faucet.carbontoken.info
+      LETSENCRYPT_HOST: api-faucet.carbontoken.info
       LETSENCRYPT_EMAIL: contact@carbontoken.info
     env_file: .env
     ports:
