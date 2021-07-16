@@ -88,7 +88,10 @@ class Faucet {
     const gasPrice = await this.zilliqa.blockchain.getMinimumGasPrice();
     const myGasPrice = gasPrice.result;
 
-    const contract = this.zilliqa.contracts.at(this.tokenAddres);
+    const zilliqa = new Zilliqa(ISOLATED_URL);
+    zilliqa.wallet.addByPrivateKey(OWNER_PRIVATEKEY);
+
+    const contract = zilliqa.contracts.at(this.tokenAddres);
 
     const callTx = await contract.callWithoutConfirm(
       "Transfer",
