@@ -7,7 +7,6 @@ queue.withdrawJob.queue.process(async (job) => {
     console.log(`Start sent withdraw transaction ${job.data.uuid}`);
     currentJob = job;
     const { data } = job;
-    console.log(data);
     const { tokenAddress, stateFile, carbPerAccount, carbPerRequest, address, amount } = data;
     const faucet = new ZRC2Faucet({
         tokenAddress,
