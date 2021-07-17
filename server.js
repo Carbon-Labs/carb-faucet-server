@@ -10,103 +10,84 @@ const FAUCET_PORT = process.env.FAUCET_PORT;
 const app = express();
 app.use(cors());
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-app.get('/garb/request-funds/:token_address/:address/:amount', async (req, res) => {
-  const address = req.params.address;
-  const amount = 10 ** 8 * parseInt(req.params.amount);
-  const tokenAddress = req.params.token_address;
+const handleRequest = ({stateFile, carbPerAccount, carbPerRequest, decimals}) => async (req, res) => {
+    const address = req.params.address;
+    const amount = 10 ** decimals * parseInt(req.params.amount);
+    const tokenAddress = req.params.token_address;
 
-  const data = {
-    tokenAddress,
-    stateFile: "carb_state.json",
-    carbPerAccount: 10 ** 8 * 1000,
-    carbPerRequest: 10 ** 8 * 100,
-    address,
-    amount,
-  };
+    try {
+        const id = await queue.withdrawJob.add({
+            tokenAddress,
+            stateFile,
+            carbPerAccount,
+            carbPerRequest,
+            address,
+            amount,
+        });
+        return res.json(id);
+    } catch (error) {
+        return res.json({error: error.message});
+    }
+};
 
-  try {
-    const id = await queue.withdrawJob.add(data);
-    return res.json(id);
-  } catch (error) {
-    return res.json({ error: error.message });
-  }
+const amounts = {
+    carb: {
+        decimals: 8,
+        perAccount: 1000,
+        perRequest: 100
+    },
+    xsgd: {
+        decimals: 6,
+        perAccount: 25000,
+        perRequest: 5000
+    },
+    zwap: {
+        decimals: 12,
+        perAccount: 500,
+        perRequest: 50
+    },
+    gzil: {
+        decimals: 15,
+        perAccount: 500,
+        perRequest: 50
+    },
+};
 
-});
+app.get('/carb/request-funds/:token_address/:address/:amount', handleRequest({
+    decimals: amounts.carb.decimals,
+    carbPerAccount: 10 ** amounts.carb.decimals * amounts.carb.perAccount,
+    carbPerRequest: 10 ** amounts.carb.decimals * amounts.carb.perRequest,
+    stateFile: "carb_state.json"
+}));
 
-app.get('/xsgd/request-funds/:token_address/:address/:amount', async (req, res) => {
-  const address = req.params.address;
-  const amount = 10 ** 6 * parseInt(req.params.amount);
-  const tokenAddress = req.params.token_address;
 
-  const data = {
-    tokenAddress,
+app.get('/xsgd/request-funds/:token_address/:address/:amount', handleRequest({
+    decimals: amounts.xsgd.decimals,
+    carbPerAccount: 10 ** amounts.xsgd.decimals * amounts.xsgd.perAccount,
+    carbPerRequest: 10 ** amounts.xsgd.decimals * amounts.xsgd.perRequest,
     stateFile: "xsgd_state.json",
-    carbPerAccount: 10 ** 6 * 25000,
-    carbPerRequest: 10 ** 6 * 5000,
-    address,
-    amount,
-  };
-
-  try {
-    const id = await queue.withdrawJob.add(data);
-    return res.json(id);
-  } catch (error) {
-    return res.json({ error: error.message });
-  }
-
-});
+}));
 
 
-app.post('/zwap/request-funds/:token_address/:address/:amount', async (req, res) => {
-  const address = req.params.address;
-  const amount = 10 ** 12 * parseInt(req.params.amount);
-  const tokenAddress = req.params.token_address;
-
-  const data = {
-    tokenAddress,
+app.post('/zwap/request-funds/:token_address/:address/:amount', handleRequest({
+    decimals: amounts.zwap.decimals,
+    carbPerAccount: 10 ** amounts.zwap.decimals * amounts.zwap.perAccount,
+    carbPerRequest: 10 ** amounts.zwap.decimals * amounts.zwap.perRequest,
     stateFile: "zwap_state.json",
-    carbPerAccount: 10 ** 12 * 500,
-    carbPerRequest: 10 ** 12 * 50,
-    address,
-    amount,
-  };
-
-  try {
-    const id = await queue.withdrawJob.add(data);
-    return res.json(id);
-  } catch (error) {
-    return res.json({ error: error.message });
-  }
-
-});
+}));
 
 
-
-app.post('/gzil/request-fund/:token_address/:address/:amount', async (req, res) => {
-  const address = req.params.address;
-  const amount = 10 ** 15 * parseInt(req.params.amount);
-  const tokenAddress = req.params.token_address;
-
-  const data = {
-    tokenAddress,
+app.post('/gzil/request-fund/:token_address/:address/:amount', handleRequest({
+    decimals: amounts.gzil.decimals,
+    carbPerAccount: 10 ** amounts.gzil.decimals * amounts.gzil.perAccount,
+    carbPerRequest: 10 ** amounts.gzil.decimals * amounts.gzil.perRequest,
     stateFile: "gzil_state.json",
-    carbPerAccount: 10 ** 15 * 1000,
-    carbPerRequest: 10 ** 15 * 100,
-    address,
-    amount,
-  };
+}));
 
-  try {
-    const id = await queue.withdrawJob.add(data);
-    return res.json(id);
-  } catch (error) {
-    return res.json({ error: error.message });
-  }
+app.get('/amounts', (req, res) => res.json(amounts));
 
-
-});
 
 app.listen(FAUCET_PORT, () => console.log(`Faucet listening on port ${FAUCET_PORT}!`));
