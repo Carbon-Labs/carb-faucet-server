@@ -72,7 +72,7 @@ app.get('/xsgd/request-funds/:token_address/:address/:amount', handleRequest({
 }));
 
 
-app.post('/zwap/request-funds/:token_address/:address/:amount', handleRequest({
+app.get('/zwap/request-funds/:token_address/:address/:amount', handleRequest({
     decimals: amounts.zwap.decimals,
     carbPerAccount: 10 ** amounts.zwap.decimals * amounts.zwap.perAccount,
     carbPerRequest: 10 ** amounts.zwap.decimals * amounts.zwap.perRequest,
@@ -80,7 +80,7 @@ app.post('/zwap/request-funds/:token_address/:address/:amount', handleRequest({
 }));
 
 
-app.post('/gzil/request-fund/:token_address/:address/:amount', handleRequest({
+app.get('/gzil/request-fund/:token_address/:address/:amount', handleRequest({
     decimals: amounts.gzil.decimals,
     carbPerAccount: 10 ** amounts.gzil.decimals * amounts.gzil.perAccount,
     carbPerRequest: 10 ** amounts.gzil.decimals * amounts.gzil.perRequest,
