@@ -52,7 +52,6 @@ services:
     command: node server.js
     volumes:
       - ./:/home/node/app
-      - node_modules:/home/node/app/node_modules
 
   worker:
     build: .
@@ -68,7 +67,6 @@ services:
     command: node worker.js
     volumes:
       - ./:/home/node/app
-      - node_modules:/home/node/app/node_modules
 
 
   redis:
@@ -86,6 +84,3 @@ services:
 networks:
   service-network:
     external: true
-
-volumes:
-  node_modules:
