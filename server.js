@@ -2,10 +2,12 @@ require('dotenv').config();
 
 const path = require("path");
 const express = require('express');
+const csrf = require('csurf');
+const csrfProtection = csrf({cookie: true});
+const cookieParser = require('cookie-parser');
 const hbs = require('express-handlebars');
 const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const queue = require("./src/queue");
 const Faucet = require('./src/faucet');
 
@@ -27,6 +29,7 @@ const requestLimiter = rateLimit({
 app.use(requestLimiter);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 const amounts = require("./src/amounts");
 
@@ -43,6 +46,9 @@ const handleRequest = (queueJob) => async (req, res) => {
 const checkRequest = (type) => async (req, res, next) => {
     const faucet = new Faucet({requiredBlock: 10, stateFile: "handler_state.json"});
     const userAddress = faucet.getAddress16(req.body.address);
+    if (!userAddress) {
+        return res.render("error", {error: "No address entered!"});
+    }
     const block = await faucet.getCurrentBlock();
     const isNotAllowed = faucet.userAlreadyRegistered({
         userAddress,
@@ -66,14 +72,12 @@ const checkRequest = (type) => async (req, res, next) => {
 };
 
 
-app.post('/tokens/request-funds', checkRequest("tokens"), handleRequest(queue.withdrawTokenJob));
-app.post('/zil/request-funds', checkRequest("zil"), handleRequest(queue.withdrawZilJob));
+app.post('/tokens/request-funds', csrfProtection, checkRequest("tokens"), handleRequest(queue.withdrawTokenJob));
+app.post('/zil/request-funds', csrfProtection, checkRequest("zil"), handleRequest(queue.withdrawZilJob));
 
 app.get('/amounts', (req, res) => res.json(amounts));
 
-app.get('/', function (req, res, next) {
-    res.render('index', {title: "$carb-faucet"});
-});
+app.get('/', csrfProtection, (req, res) => res.render('index', {title: "$carb-faucet", csrfToken: req.csrfToken()}));
 
 
 app.listen(FAUCET_PORT, () => console.log(`Faucet listening on port ${FAUCET_PORT}!`));
