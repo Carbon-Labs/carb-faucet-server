@@ -1,91 +1,58 @@
 require('dotenv').config();
 
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const queue = require("./src/queue");
+const Faucet = require('./src/faucet');
 
 const FAUCET_PORT = process.env.FAUCET_PORT;
 
 const app = express();
 app.use(cors());
 
+const requestLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 3 // limit each IP to 3 requests per windowMs
+});
+
+app.use(requestLimiter);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-const handleRequest = ({stateFile, carbPerAccount, carbPerRequest, decimals}) => async (req, res) => {
-    const address = req.params.address;
-    const amount = 10 ** decimals * parseInt(req.params.amount);
-    const tokenAddress = req.params.token_address;
+const amounts = require("./src/amounts");
 
+const handleRequest = (queueJob) => async (req, res) => {
+    const address = req.params.address;
     try {
-        const id = await queue.withdrawJob.add({
-            tokenAddress,
-            stateFile,
-            carbPerAccount,
-            carbPerRequest,
-            address,
-            amount,
-        });
+        const id = await queueJob.add({address});
         return res.json(id);
     } catch (error) {
         return res.json({error: error.message});
     }
 };
 
-const amounts = {
-    carb: {
-        decimals: 8,
-        perAccount: 1000,
-        perRequest: 100
-    },
-    xsgd: {
-        decimals: 6,
-        perAccount: 25000,
-        perRequest: 5000
-    },
-    zwap: {
-        decimals: 12,
-        perAccount: 500,
-        perRequest: 50
-    },
-    gzil: {
-        decimals: 15,
-        perAccount: 500,
-        perRequest: 50
-    },
+const checkRequest = (type) => async (req, res, next) => {
+    const faucet = new Faucet({requiredBlock: 10, stateFile: "handler_state.json"});
+    const userAddress = faucet.getAddress16(req.params.address);
+    const block = await faucet.getCurrentBlock();
+    const isNotAllowed = faucet.userAlreadyRegistered({
+        userAddress,
+        block,
+        type
+    });
+    if (isNotAllowed) {
+        return res.status(500).json("already requested");
+    }
+    faucet.appendUserToState({userAddress, block, type});
+    faucet.saveState();
+    return next();
 };
 
-app.get('/carb/request-funds/:token_address/:address/:amount', handleRequest({
-    decimals: amounts.carb.decimals,
-    carbPerAccount: 10 ** amounts.carb.decimals * amounts.carb.perAccount,
-    carbPerRequest: 10 ** amounts.carb.decimals * amounts.carb.perRequest,
-    stateFile: "carb_state.json"
-}));
 
-
-app.get('/xsgd/request-funds/:token_address/:address/:amount', handleRequest({
-    decimals: amounts.xsgd.decimals,
-    carbPerAccount: 10 ** amounts.xsgd.decimals * amounts.xsgd.perAccount,
-    carbPerRequest: 10 ** amounts.xsgd.decimals * amounts.xsgd.perRequest,
-    stateFile: "xsgd_state.json",
-}));
-
-
-app.get('/zwap/request-funds/:token_address/:address/:amount', handleRequest({
-    decimals: amounts.zwap.decimals,
-    carbPerAccount: 10 ** amounts.zwap.decimals * amounts.zwap.perAccount,
-    carbPerRequest: 10 ** amounts.zwap.decimals * amounts.zwap.perRequest,
-    stateFile: "zwap_state.json",
-}));
-
-
-app.get('/gzil/request-fund/:token_address/:address/:amount', handleRequest({
-    decimals: amounts.gzil.decimals,
-    carbPerAccount: 10 ** amounts.gzil.decimals * amounts.gzil.perAccount,
-    carbPerRequest: 10 ** amounts.gzil.decimals * amounts.gzil.perRequest,
-    stateFile: "gzil_state.json",
-}));
+app.get('/tokens/request-funds/:address', checkRequest("tokens"), handleRequest(queue.withdrawTokenJob));
+app.get('/zil/request-funds/:address', checkRequest("zil"), handleRequest(queue.withdrawZilJob));
 
 app.get('/amounts', (req, res) => res.json(amounts));
 

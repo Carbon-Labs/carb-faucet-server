@@ -1,5 +1,6 @@
 module.exports = {
     jobType: {
-        WITHDRAW: "WITHDRAW"
+        WITHDRAW_TOKENS: "WITHDRAW_TOKENS",
+        WITHDRAW_ZIL: "WITHDRAW_ZIL",
     }
 };

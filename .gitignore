@@ -1,5 +1,5 @@
 node_modules
-*-state.json
+*state.json
 .env
 dist
 *.iml
