@@ -1,6 +1,6 @@
 {
   "name": "carb-faucet-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CARBON Faucet for Test Server",
   "main": "server.js",
   "dependencies": {
