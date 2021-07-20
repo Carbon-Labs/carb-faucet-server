@@ -33,7 +33,7 @@ services:
       - ./nginx/nginx-vhost:/etc/nginx/vhost.d
       - ./nginx/nginx-html:/usr/share/nginx/html
 
-  faucent:
+  faucet:
     build: .
     container_name: faucent
     networks:
