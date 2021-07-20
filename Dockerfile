@@ -1,7 +1,7 @@
 FROM node:12
 RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
-COPY ["package.json", "package-lock.json*", "/home/node/app/"]
+COPY package*.json ./
 RUN npm install
-COPY . /home/node/app
+COPY . .
 EXPOSE 3000
