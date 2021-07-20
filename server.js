@@ -56,7 +56,7 @@ const checkRequest = (type) => async (req, res, next) => {
         type
     });
     if (isNotAllowed) {
-        return res.render("error", {error: "already requested"});
+        return res.render("error", {error: "Sorry, that address has already requested funds recently. Please try again later."});
     }
     const faucet_state = new Faucet({stateFile: "faucet_state.json"});
     if (faucet_state.userAlreadyRegistered({
