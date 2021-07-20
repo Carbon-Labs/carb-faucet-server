@@ -51,7 +51,7 @@ services:
     depends_on: [ redis ]
     command: node server.js
     volumes:
-      - .:/home/node/app
+      - ./:/home/node/app
       - node_modules:/home/node/app/node_modules
 
   worker:
@@ -67,7 +67,7 @@ services:
     depends_on: [ redis ]
     command: node worker.js
     volumes:
-      - .:/home/node/app
+      - ./:/home/node/app
       - node_modules:/home/node/app/node_modules
 
 
