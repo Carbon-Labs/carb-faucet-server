@@ -45,6 +45,7 @@ services:
       LETSENCRYPT_HOST: api-faucet.carbontoken.info
       LETSENCRYPT_EMAIL: contact@carbontoken.info
     env_file: .env
+    working_dir: /home/node/app
     ports:
       - 3000:3000
     depends_on: [ redis ]
@@ -62,6 +63,7 @@ services:
     environment:
       REDIS_URL: redis://redis/0
     env_file: .env
+    working_dir: /home/node/app
     depends_on: [ redis ]
     command: node worker.js
     volumes:
