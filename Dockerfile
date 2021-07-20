@@ -1,6 +1,7 @@
 FROM node:12
+RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
 COPY package*.json ./
-RUN npm cache clean --force && npm install
+RUN npm install
 COPY . .
 EXPOSE 3000

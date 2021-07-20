@@ -52,6 +52,8 @@ services:
     command: node server.js
     volumes:
       - ./:/home/node/app
+      - ./package.json:/home/node/app/package.json
+      - ./package-lock.json:/home/node/app/package-lock.json
       - node_modules:/home/node/app/node_modules
 
   worker:
@@ -68,6 +70,8 @@ services:
     command: node worker.js
     volumes:
       - ./:/home/node/app
+      - ./package.json:/home/node/app/package.json
+      - ./package-lock.json:/home/node/app/package-lock.json
       - node_modules:/home/node/app/node_modules
 
 
