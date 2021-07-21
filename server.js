@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const requestLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 15 // limit each IP to 3 requests per windowMs
+    max: 25 // limit each IP to 3 requests per windowMs
 });
 
 app.use(requestLimiter);
@@ -44,6 +44,7 @@ const handleRequest = (queueJob) => async (req, res) => {
 };
 
 const checkRequest = (type) => async (req, res, next) => {
+    const error = "Sorry, that address has already requested funds recently. Please try again later.";
     const faucet = new Faucet({requiredBlock: 10, stateFile: "handler_state.json"});
     const userAddress = faucet.getAddress16(req.body.address);
     if (!userAddress) {
@@ -56,7 +57,7 @@ const checkRequest = (type) => async (req, res, next) => {
         type
     });
     if (isNotAllowed) {
-        return res.render("error", {error: "Sorry, that address has already requested funds recently. Please try again later."});
+        return res.render("error", {error});
     }
     const faucet_state = new Faucet({stateFile: "faucet_state.json"});
     if (faucet_state.userAlreadyRegistered({
@@ -64,7 +65,7 @@ const checkRequest = (type) => async (req, res, next) => {
         block,
         type
     })) {
-        return res.render("error", {error: "already requested"});
+        return res.render("error", {error});
     }
     faucet.appendUserToState({userAddress, block, type});
     faucet.saveState();
@@ -77,7 +78,14 @@ app.post('/zil/request-funds', csrfProtection, checkRequest("zil"), handleReques
 
 app.get('/amounts', (req, res) => res.json(amounts));
 
-app.get('/', csrfProtection, (req, res) => res.render('index', {title: "$carb-faucet", csrfToken: req.csrfToken()}));
+app.get('/', csrfProtection, (req, res) => res.render('zil_faucet', {
+    title: "$carb-faucet",
+    csrfToken: req.csrfToken()
+}));
+app.get('/zrc2-faucet', csrfProtection, (req, res) => res.render('zrc2_faucet', {
+    title: "$carb-faucet",
+    csrfToken: req.csrfToken()
+}));
 
 
 app.listen(FAUCET_PORT, () => console.log(`Faucet listening on port ${FAUCET_PORT}!`));

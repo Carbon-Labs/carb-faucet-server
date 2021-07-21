@@ -1,0 +1,24 @@
+<div class="container w-container"><h1 class="logo">ZRC2 FAUCET</h1>
+    <p class="subtitle">Bought To You By Carbon Labs</p>
+    <div class="title-wrapper w-clearfix">
+        <div class="long-line"></div>
+        <p class="tokens">CARB-XSGD-ZWAP-GZIL</p>
+        <div class="long-line"></div>
+    </div>
+    <div class="faucet-form w-form">
+        <form name="wf-form-Faucet" data-name="Faucet" action="/tokens/request-funds" method="POST" id="wf-form-Faucet"
+              class="w-clearfix">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            <input type="text"
+                   name="address"
+                   data-name="Address"
+                   placeholder="Your Testnet Address"
+                   maxlength="42"
+                   required=""
+                   id="Address"
+                   class="field w-input">
+            <input type="submit" value="Submit" data-wait="Please wait..." class="button w-button">
+        </form>
+    </div>
+    <p class="bottom-link"><a href="/" class="link">FOR&nbsp;Testnet zil tokens CLICK&nbsp;HERE</a></p>
+</div>

@@ -1,9 +1,12 @@
-<header class="site-header" id="header">
-    <h1 style="color: red">{{error}}</h1>
-</header>
-
-<div class="main-content">
-    <form method="GET" action="/">
-        <input type="submit" value="Home"/>
-    </form>
+<div class="container w-container"><h1 class="logo">FAUCET</h1>
+    <p class="subtitle">Bought To You By Carbon Labs</p>
+    <div class="title-wrapper w-clearfix">
+        <div class="long-line"></div>
+        <p class="tokens"> {{error}}</p>
+        <div class="long-line"></div>
+    </div>
+    <div class="faucet-form w-form">
+        <div class="error-message w-form-fail"><p>Oops! Sorry, we had a problem. Please try again :(</p></div>
+    </div>
+    <p class="bottom-link"><a href="/" class="link">Home</a></p>
 </div>
