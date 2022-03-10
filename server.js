@@ -26,7 +26,7 @@ const requestLimiter = rateLimit({
     max: 25 // limit each IP to 3 requests per windowMs
 });
 
-app.use(requestLimiter);
+//app.use(requestLimiter);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cookieParser());
